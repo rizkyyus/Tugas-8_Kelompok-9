@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Daftar Produk{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+    <h2 style="font-size: 1.75rem; font-weight: 600; color: #1f2a44;">Daftar Produk Elektronik</h2>
+    <a href="{% url 'tambah_produk' %}" class="btn btn-success">Tambah Produk</a>
+</div>
+
+<!-- Form Pencarian -->
+<form method="GET" class="search-form" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+    <input type="text" name="q" placeholder="Cari produk..." value="{{ query }}" style="flex: 1; min-width: 200px; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s ease, box-shadow 0.3s ease;">
+    <select name="kategori" style="flex: 1; min-width: 150px; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; background: #ffffff; transition: border-color 0.3s ease, box-shadow 0.3s ease;">
+        <option value="">Pilih Kategori</option>
+        {% for value, label in kategori_choices %}
+            <option value="{{ value }}" {% if kategori_selected == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn" style="padding: 12px 24px; font-size: 1rem;">Cari</button>
+    {% if query or kategori_selected %}
+        <a href="{% url 'list_produk' %}" class="btn btn-warning" style="padding: 12px 24px; font-size: 1rem;">Reset</a>
+    {% endif %}
+</form>
+
+{% if produk_list %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nama Produk</th>
+                <th>Kategori</th>
+                <th>Harga</th>
+                <th>Stok</th>
+                <th>Status</th>
+                <th>Tanggal Dibuat</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produk in produk_list %}
+            <tr>
+                <td>
+                    <strong>{{ produk.nama }}</strong>
+                    {% if produk.deskripsi %}
+                        <br><small style="color: #6b7280;">{{ produk.deskripsi|truncatechars:50 }}</small>
+                    {% endif %}
+                </td>
+                <td>{{ produk.get_kategori_display }}</td>
+                <td>Rp {{ produk.harga|floatformat:0 }}</td>
+                <td>{{ produk.stok }} unit</td>
+                <td>
+                    {% if produk.tersedia %}
+                        <span class="badge badge-success">Tersedia</span>
+                    {% else %}
+                        <span class="badge badge-danger">Tidak Tersedia</span>
+                    {% endif %}
+                </td>
+                <td>{{ produk.tanggal_dibuat|date:"d M Y" }}</td>
+                <td style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <a href="{% url 'detail_produk' produk.id %}" class="btn" style="font-size: 0.875rem; padding: 8px 12px;">Detail</a>
+                    <a href="{% url 'edit_produk' produk.id %}" class="btn btn-warning" style="font-size: 0.875rem; padding: 8px 12px;">Edit</a>
+                    <a href="{% url 'hapus_produk' produk.id %}" class="btn btn-danger" style="font-size: 0.875rem; padding: 8px 12px;">Hapus</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <p style="color: #6b7280; margin-top: 24px;">
+        Total: {{ produk_list.count }} produk
+    </p>
+{% else %}
+    <div class="empty-state">
+        <h3>Belum Ada Produk</h3>
+        <p>Mulai dengan menambahkan produk elektronik pertama Anda!</p>
+        <a href="{% url 'tambah_produk' %}" class="btn btn-success">Tambah Produk Pertama</a>
+    </div>
+{% endif %}
+{% endblock %}

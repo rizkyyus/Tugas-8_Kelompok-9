@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Hapus Produk{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; text-align: center;">
+    <h2 style="font-size: 1.75rem; font-weight: 600; color: #ef4444; margin-bottom: 24px;">Konfirmasi Hapus Produk</h2>
+    
+    <div class="product-card" style="margin: 32px 0;">
+        <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2a44;">{{ produk.nama }}</h3>
+        <p><strong>Kategori:</strong> {{ produk.get_kategori_display }}</p>
+        <p><strong>Harga:</strong> Rp {{ produk.harga|floatformat:0 }}</p>
+        <p><strong>Stok:</strong> {{ produk.stok }} unit</p>
+        {% if produk.deskripsi %}
+            <p><strong>Deskripsi:</strong> {{ produk.deskripsi }}</p>
+        {% endif %}
+    </div>
+    
+    <div class="alert alert-error">
+        <strong>Peringatan!</strong><br>
+        Produk yang sudah dihapus tidak dapat dikembalikan lagi.
+    </div>
+    
+    <form method="POST" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Ya, Hapus Produk</button>
+    </form>
+    
+    <a href="{% url 'list_produk' %}" class="btn">Batal</a>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Tambah Produk{% endblock %}
+
+{% block content %}
+<div class="product-card" style="max-width: 600px; margin: 0 auto;">
+    <h2 style="font-size: 1.75rem; font-weight: 600; color: #1f2a44; margin-bottom: 24px; text-align: center;">Tambah Produk Baru</h2>
+
+    {% if errors %}
+        <div class="alert alert-error">
+            <strong>Terjadi kesalahan:</strong>
+            <ul style="margin: 12px 0 0 20px; list-style: disc;">
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form method="POST" style="display: flex; flex-direction: column; gap: 24px;">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="nama" style="font-size: 1rem; font-weight: 500; color: #1f2a44;">Nama Produk <span style="color: #ef4444;">*</span></label>
+            <input type="text" id="nama" name="nama" value="{{ nama }}" placeholder="Contoh: iPhone 15 Pro Max" style="transition: all 0.3s ease;">
+        </div>
+        
+        <div class="form-group">
+            <label for="kategori" style="font-size: 1rem; font-weight: 500; color: #1f2a44;">Kategori <span style="color: #ef4444;">*</span></label>
+            <select id="kategori" name="kategori">
+                <option value="">Pilih Kategori</option>
+                {% for value, label in kategori_choices %}
+                    <option value="{{ value }}" {% if kategori == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="harga" style="font-size: 1rem; font-weight: 500; color: #1f2a44;">Harga (Rp) <span style="color: #ef4444;">*</span></label>
+            <input type="number" id="harga" name="harga" value="{{ harga }}" placeholder="15000000" step="0.01">
+        </div>
+        
+        <div class="form-group">
+            <label for="stok" style="font-size: 1rem; font-weight: 500; color: #1f2a44;">Stok <span style="color: #ef4444;">*</span></label>
+            <input type="number" id="stok" name="stok" value="{{ stok }}" placeholder="10">
+        </div>
+        
+        <div class="form-group">
+            <label for="deskripsi" style="font-size: 1rem; font-weight: 500; color: #1f2a44;">Deskripsi</label>
+            <textarea id="deskripsi" name="deskripsi" rows="4" placeholder="Deskripsi detail produk..." style="resize: vertical;">{{ deskripsi }}</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 1rem; font-weight: 500; color: #1f2a44;">
+                <input type="checkbox" name="tersedia" {% if tersedia %}checked{% endif %} style="width: 18px; height: 18px; accent-color: #10b981; cursor: pointer;">
+                Produk tersedia untuk dijual
+            </label>
+        </div>
+        
+        <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 24px;">
+            <button type="submit" class="btn btn-success" style="padding: 12px 32px; font-size: 1rem;">Simpan Produk</button>
+            <a href="{% url 'list_produk' %}" class="btn" style="padding: 12px 32px; font-size: 1rem;">Kembali</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

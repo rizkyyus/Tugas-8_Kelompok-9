@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Produk{% endblock %}
+
+{% block content %}
+<h2 style="font-size: 1.75rem; font-weight: 600; color: #1f2a44; margin-bottom: 24px;">Edit Produk: {{ produk.nama }}</h2>
+
+{% if errors %}
+    <div class="alert alert-error">
+        <strong>Terjadi kesalahan:</strong>
+        <ul style="margin: 12px 0 0 20px;">
+        {% for error in errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<form method="POST">
+    {% csrf_token %}
+    
+    <div class="form-group">
+        <label for="nama">Nama Produk *</label>
+        <input type="text" id="nama" name="nama" value="{{ produk.nama }}" placeholder="Contoh: iPhone 15 Pro Max">
+    </div>
+    
+    <div class="form-group">
+        <label for="kategori">Kategori *</label>
+        <select id="kategori" name="kategori">
+            <option value="">Pilih Kategori</option>
+            {% for value, label in kategori_choices %}
+                <option value="{{ value }}" {% if produk.kategori == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="harga">Harga (Rp) *</label>
+        <input type="number" id="harga" name="harga" value="{{ produk.harga }}" step="0.01">
+    </div>
+    
+    <div class="form-group">
+        <label for="stok">Stok *</label>
+        <input type="number" id="stok" name="stok" value="{{ produk.stok }}">
+    </div>
+    
+    <div class="form-group">
+        <label for="deskripsi">Deskripsi</label>
+        <textarea id="deskripsi" name="deskripsi" rows="4">{{ produk.deskripsi }}</textarea>
+    </div>
+    
+    <div class="form-group">
+        <label style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" name="tersedia" {% if produk.tersedia %}checked{% endif %}>
+            Produk tersedia untuk dijual
+        </label>
+    </div>
+    
+    <div style="margin-top: 32px; display: flex; gap: 12px; flex-wrap: wrap;">
+        <button type="submit" class="btn btn-success">Update Produk</button>
+        <a href="{% url 'list_produk' %}" class="btn">Kembali</a>
+        <a href="{% url 'detail_produk' produk.id %}" class="btn btn-warning">Detail</a>
+    </div>
+</form>
+{% endblock %}
